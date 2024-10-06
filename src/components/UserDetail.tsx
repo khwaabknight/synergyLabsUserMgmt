@@ -28,7 +28,7 @@ function UserDetail() {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
-  if (!user) {
+  if (!user || Object.keys(user).length === 0) {
     return <div className="text-center mt-8">User not found</div>;
   }
 
