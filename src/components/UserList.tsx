@@ -33,6 +33,7 @@ function UserList() {
   };
 
   const handleCreateUser = (newUser : User) => {
+    console.log(newUser)
     setUsers([...users, { ...newUser, id: users.length + 1 }]);
     setIsFormOpen(false);
     toast.success('User created successfully');

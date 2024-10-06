@@ -87,7 +87,10 @@ function UserForm({ user, onSubmit, onClose }: UserFormProps) {
 
   const handleChange = (e : React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    if(name === 'street') setFormData(prev => ({ ...prev, address: { ...prev.address, street: value } }));
+    else if(name === 'city') setFormData(prev => ({ ...prev, address: { ...prev.address, city: value } }));
+    else if(name === 'companyName') setFormData(prev => ({ ...prev, company: { ...prev.company, name: value } }));
+    else setFormData(prev => ({ ...prev, [name]: value }));
     if (name === 'name' && !user) {
       // Update username when name changes for new users
       setFormData(prev => ({
@@ -116,11 +119,13 @@ function UserForm({ user, onSubmit, onClose }: UserFormProps) {
     if (!formData.address.city) newErrors.address = 'Address - City is required';
     if (formData.company.name && formData.company.name.length < 3) newErrors.company = 'Company Name is required';
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    console.log(Object.keys(newErrors).some((error) => newErrors[error as keyof Errors] !== ''));
+    return !Object.keys(newErrors).some((error) => newErrors[error as keyof Errors] !== '');
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log(formData);
     if (validateForm()) {
       onSubmit(formData);
     }
@@ -199,6 +204,50 @@ function UserForm({ user, onSubmit, onClose }: UserFormProps) {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
             {errors.website && <p className="text-red-500 text-xs italic">{errors.website}</p>}
+          </div>
+          <h3 className="text-lg font-bold mb-4">Address</h3>
+          <div className='mb-4'>
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="street">
+              Street
+            </label>
+            <input
+              type="text"
+              id="street"
+              name="street"
+              value={formData.address.street}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+            {errors.address && <p className="text-red-500 text-xs italic">{errors.address}</p>}
+          </div>
+          <div className='mb-4'>
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="city">
+              City
+            </label>
+            <input
+              type="text"
+              id="city"
+              name="city"
+              value={formData.address.city}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+            {errors.address && <p className="text-red-500 text-xs italic">{errors.address}</p>}
+          </div>
+          <h3 className='text-lg font-bold mb-4'>Company</h3>
+          <div className='mb-4'>
+            <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor="companyName">
+              Name
+            </label>
+            <input
+              type="text"
+              id="companyName"
+              name="companyName"
+              value={formData.company.name}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+            {errors.company && <p className="text-red-500 text-xs italic">{errors.company}</p>}
           </div>
           <div className="flex items-center justify-between">
             <button
